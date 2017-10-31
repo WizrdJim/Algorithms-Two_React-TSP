@@ -19,4 +19,7 @@ module.exports = {
     ],
   },
   plugins: [HtmlWebpackPluginConfig],
+  node: {
+    fs: "empty",
+ },
 }

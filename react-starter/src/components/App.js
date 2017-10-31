@@ -1,14 +1,57 @@
-// Step 1: Import React, and Component from react.
-// Step 2: Import render from react-dom
-// Step 3: Import MoviesList from MoviesList
+import React, { Component } from 'react';
+const algorithms = require('../data/Algorithms');
+const dataset = require('../data/dataset');
+let canvasContainerStyle = {
+  margin: "10 auto"
+}
+let canvasStyle = {
+  width: "500px",
+  height: "500px"
+}
 
-// Step 4: Write a class called App, extending Component.
-// Step 5: Write a constructor function without passing anything into it.
-// Step 6: Inside the constructor function, call super without passing anything into it.
-// Step 7: Inside the constructor function, create a state on this, and set it to an object.
-// Step 8: Inside the object, set a key to movies, and the value to an array of movies
-// Step 9: Write a render function.
-// Step 10: Inside the render function, write a return statement.
-// Step 11: Inside the return statement, write a selfclosing tag called MoviesList
-// Step 12: Inside the selfclosing tag, give it an attribute called movies, and pass it this.state.movies inside a set of curly bracket.
-// Step 13: Outside the class, export the App class as a default.
+export default class TSPCanvas extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      algorithm: algorithms.exhaustiveAlgorithm,
+      dataset: dataset.cities,
+      path: []
+    };
+  }
+  updateTSPVertices(set) {
+    // when the TSP has a set of vertices (cities), draw them as small
+    // circles here.
+    let radius = 10;
+    console.log(set);
+    for(let i = 0; i < set.length; i++) {
+      this.drawCircle(set[i], radius)
+    }
+    
+  }
+  updateTSPPath() {
+    // when the TSP has computed the "best" path, draw it here along the circles
+    this.state.path = this.state.algorithm(this.state.dataset);
+    console.log(this.state.path);
+  }
+  drawCircle(object, radius = 20) {
+    this.context.beginPath();
+    this.context.arc(object.x,object.y,radius,0,2*Math.PI, false);
+    this.context.stroke();
+  }
+  click() {
+    this.updateTSPVertices();
+  }
+  render() {
+    return (
+      <div>
+        <div style={canvasContainerStyle}>
+          <canvas id="TSP" ref={(c) => this.context = c.getContext('2d')} height={canvasStyle.height} width={canvasStyle.width} style={canvasStyle} onClick={() => this.click()} />
+        </div>
+        <div>
+          <button onClick={() => this.updateTSPVertices(this.state.dataset)}> cities </button>
+          <button onClick={() => this.updateTSPPath()}> Show Path </button>
+        </div>
+      </div>
+    );
+  }
+}
